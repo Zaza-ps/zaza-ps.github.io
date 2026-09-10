@@ -1,0 +1,286 @@
+/* ===================================================================
+   ZAZA Store — PS4 Exploit Host
+   Modern redesign. Built on top of the original GamerHack template:
+   all original ids (#msgs, #menu) and classes (.btn, .btn-onln,
+   .btn-toolbox, .btn-ps5) are kept and restyled — not removed — so any
+   sub-page that already relies on them keeps working, and future
+   sub-page redesigns can reuse the same design system.
+   No CSS variables / no CSS Grid — kept plain + -webkit- prefixed for
+   compatibility with the PS4's built-in (old WebKit) browser.
+   =================================================================== */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background-color: #140f1e;
+  background-image: -webkit-radial-gradient(50% 0%, circle, #241a35 0%, #140f1e 60%);
+  background-image: radial-gradient(circle at 50% 0%, #241a35 0%, #140f1e 60%);
+  background-attachment: fixed;
+  color: #f3eefb;
+  text-align: center;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
+  padding: 28px 16px 40px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+h1 {
+  text-shadow: none;
+  font-size: 25px;
+  color: #f3eefb;
+  margin: 0;
+}
+
+/* -------------------------------------------------------------
+   Layout wrapper
+   ------------------------------------------------------------- */
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* -------------------------------------------------------------
+   Hero / logo / status message (#msgs is read by the original
+   inline onmouseover/onmouseout handlers — id kept exactly)
+   ------------------------------------------------------------- */
+
+.hero {
+  padding-bottom: 22px;
+}
+
+.logo {
+  max-width: 230px;
+  width: 60%;
+  height: auto;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  margin-bottom: 18px;
+}
+
+#msgs {
+  font-size: 15px;
+  font-weight: 700;
+  color: #c9bce0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(240,201,74,0.18);
+  border-radius: 999px;
+  padding: 10px 20px;
+  display: inline-block;
+  max-width: 100%;
+  min-height: 20px;
+  -webkit-transition: color 0.15s ease;
+  transition: color 0.15s ease;
+}
+
+/* -------------------------------------------------------------
+   Firmware grid
+   ------------------------------------------------------------- */
+
+#menu {
+  display: block;
+}
+
+.grid {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin: 22px 0 8px;
+}
+
+.card {
+  position: relative;
+  display: block;
+  flex: 1 1 150px;
+  max-width: 220px;
+  margin: 6px;
+  padding: 16px 12px;
+  background: #1c1530;
+  border: 1px solid rgba(240,201,74,0.22);
+  border-radius: 12px;
+  cursor: pointer;
+  -webkit-transition: -webkit-transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.card .ver {
+  display: block;
+  font-size: 19px;
+  font-weight: 800;
+  color: #f3eefb;
+}
+
+.card .tag {
+  display: block;
+  margin-top: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #9686b3;
+}
+
+.card:hover,
+.card:focus {
+  border-color: #f0c94a;
+  background: #241a3a;
+  -webkit-transform: translateY(-2px);
+  transform: translateY(-2px);
+}
+
+.card:hover .ver,
+.card:focus .ver { color: #f0c94a; }
+
+.card:active {
+  -webkit-transform: scale(0.96);
+  transform: scale(0.96);
+  border-color: #e8a83c;
+  background: #2a1e42;
+}
+
+/* -------------------------------------------------------------
+   Action buttons — .btn / .btn-onln kept as the original class
+   names (in case sub-pages reuse them), restyled here.
+   ------------------------------------------------------------- */
+
+.actions {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn {
+  background: transparent;
+  color: #f3eefb;
+  border: 1.5px solid rgba(255,255,255,0.18);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 12px 26px;
+  margin: 5px 6px;
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-transition: -webkit-transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+  transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.btn:hover {
+  border-color: #f0c94a;
+  background: rgba(240,201,74,0.08);
+}
+
+.btn:active {
+  -webkit-transform: scale(0.95);
+  transform: scale(0.95);
+}
+
+.btn-onln {
+  background: #f0c94a;
+  border-color: #f0c94a;
+  color: #1c1530;
+}
+
+.btn-onln:hover {
+  background: #e8a83c;
+  border-color: #e8a83c;
+}
+
+/* -------------------------------------------------------------
+   Footer — contact + credit line
+   ------------------------------------------------------------- */
+
+.site-footer {
+  margin-top: 34px;
+}
+
+.contact {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.contact a {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #f3eefb;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 999px;
+  padding: 8px 18px;
+  margin: 4px 6px;
+  direction: ltr;
+  -webkit-transition: border-color 0.15s ease, background 0.15s ease;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.contact a:hover {
+  border-color: #f0c94a;
+  background: rgba(240,201,74,0.08);
+}
+
+.credit {
+  font-size: 13px;
+  color: #7a6f90;
+  line-height: 1.9;
+}
+
+.credit a {
+  color: #f0c94a;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(240,201,74,0.4);
+}
+
+.credit a:hover { color: #e8a83c; border-color: #e8a83c; }
+
+/* ===================================================================
+   Legacy / shared classes — kept for compatibility with sub-pages.
+   Not used on this page right now, left in place intentionally.
+   =================================================================== */
+
+#progress { display: block; }
+#tools { display: none; }
+#lnx { display: none; }
+#mods { display: none; }
+
+.btn-toolbox {
+  background-color: #ae2301;
+  color: #fff;
+  border-color: #ae2301;
+}
+.btn-toolbox:hover { background-color: #d42a01; border-color: #d42a01; }
+
+.btn-ps5 {
+  background-color: #3d3f4e;
+  color: #fff;
+  border-color: #3d3f4e;
+}
+.btn-ps5:hover { background-color: #c2c2c2; border-color: #c2c2c2; color: #303030; }
