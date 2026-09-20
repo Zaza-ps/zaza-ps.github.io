@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en" manifest="cache.appcache">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Zaza</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: #1b0d27;
+        color: #f3ecd8;
+        font-family: "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        text-align: center;
+      }
+      body {
+        padding: 12vh 18px 40px;
+      }
+
+      /* logo: same colour as the page, edges fade out so no visible square */
+      #brand {
+        width: 240px;
+        max-width: 70%;
+        margin: 0 auto;
+        background: radial-gradient(
+          circle at 50% 55%,
+          rgba(240, 160, 32, 0.18),
+          rgba(240, 160, 32, 0) 65%
+        );
+      }
+      #brand img {
+        display: block;
+        width: 100%;
+        height: auto;
+        -webkit-mask-image: radial-gradient(
+          circle,
+          #000 68%,
+          rgba(0, 0, 0, 0) 77%
+        );
+        mask-image: radial-gradient(circle, #000 68%, rgba(0, 0, 0, 0) 77%);
+      }
+
+      /* running: a spinner under the logo. jb.js sets body.done / body.fail / body.log. */
+      #spin {
+        box-sizing: border-box;
+        width: 46px;
+        height: 46px;
+        margin: 28px auto 0;
+        border: 4px solid #3a2350;
+        border-top-color: #e8c848;
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #msg {
+        display: none;
+        max-width: 520px;
+        margin: 28px auto 0;
+        padding: 14px 20px;
+        background: #26123a;
+        border: 1px solid rgba(255, 138, 128, 0.45);
+        border-radius: 12px;
+        color: #ff8a80;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+      }
+      #wrap {
+        padding: 0;
+      }
+      #state,
+      #out {
+        display: none;
+      }
+
+      body.done #spin {
+        display: none;
+      }
+      body.fail #spin {
+        display: none;
+      }
+      body.fail #msg {
+        display: block;
+      }
+
+      /* ?log=1 -- the full step log, with a compact logo on top. */
+      body.log {
+        padding: 0 12px;
+      }
+      body.log #brand {
+        width: 56px;
+        margin: 10px auto 0;
+      }
+      body.log #spin,
+      body.log #msg {
+        display: none;
+      }
+      body.log #wrap {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 8px 6px 14px;
+      }
+      body.log #state {
+        display: block;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0 0 8px;
+      }
+      body.log #out {
+        display: block;
+        box-sizing: border-box;
+        white-space: pre-wrap;
+        text-align: left;
+        direction: ltr;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 13px;
+        line-height: 1.45;
+        color: #d9cfe6;
+        background: #150a1e;
+        border: 1px solid rgba(232, 200, 72, 0.28);
+        border-radius: 8px;
+        padding: 10px 12px;
+        height: calc(100vh - 160px);
+        min-height: 160px;
+        overflow-y: auto;
+      }
+      .ok {
+        color: #7fd0a0;
+      }
+      .bad {
+        color: #ff8a80;
+      }
+      .warn {
+        color: #ffd25a;
+      }
+      .safe {
+        color: #7fd0a0;
+      }
+      .danger {
+        color: #ff8a80;
+      }
+      code {
+        color: #c9b6e8;
+      }
+
+      /* TV / desktop: the PS4 browser runs at 1920x1080, so scale up */
+      @media (min-width: 900px) {
+        #brand {
+          width: 340px;
+        }
+        #spin {
+          width: 64px;
+          height: 64px;
+          margin-top: 40px;
+          border-width: 5px;
+        }
+        #msg {
+          max-width: 680px;
+          margin-top: 40px;
+          padding: 20px 28px;
+          font-size: 30px;
+        }
+        body.log #brand {
+          width: 72px;
+        }
+        body.log #state {
+          font-size: 30px;
+          margin-bottom: 10px;
+        }
+        body.log #out {
+          font-size: 16px;
+          height: calc(100vh - 190px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="brand">
+      <img src="../img.jpg" alt="ZAZA بتاع ألعاب" width="640" height="640" />
+    </div>
+    <div id="spin"></div>
+    <div id="msg">Restart your console</div>
+    <div id="wrap">
+      <div id="state"></div>
+      <div id="out"></div>
+    </div>
+    <script type="module">
+      import "./jb.js?v=10";
+    </script>
+  </body>
+</html>
