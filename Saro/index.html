@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" manifest="cache.appcache">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zaza</title>
+<style>
+  html, body { margin:0; padding:0; background:#1b0d27; color:#f3ecd8;
+               font:16px/1.5 "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
+               text-align:center; }
+  body { padding:5vh 18px 40px; }
+
+  /* logo: matches the page background, edges fade out so no visible square */
+  .emblem { width:240px; max-width:80%; margin:0 auto;
+            background:radial-gradient(circle at 50% 55%, rgba(240,160,32,.18), rgba(240,160,32,0) 65%); }
+  .emblem img { display:block; width:100%; height:auto;
+                -webkit-mask-image:radial-gradient(circle, #000 68%, rgba(0,0,0,0) 77%);
+                mask-image:radial-gradient(circle, #000 68%, rgba(0,0,0,0) 77%); }
+
+  .sub { margin:14px 0 8px; font-size:15px; color:#a898b8; }
+  .fw { margin:0 0 22px; }
+  .fw span { display:inline-block; margin:3px 4px; padding:2px 12px;
+             border:1px solid rgba(232,200,72,.45); border-radius:999px;
+             font-size:14px; font-weight:600; color:#e8c848; }
+
+  /* status panel: #state / #det / #cache are written to by the script */
+  #wrap { max-width:760px; margin:0 auto; padding:22px 22px 18px;
+          background:#26123a; border:1px solid rgba(232,200,72,.28);
+          border-radius:16px; direction:ltr; }
+  #state { font-size:22px; font-weight:700; line-height:1.3; margin:0 0 8px;
+           color:#f3ecd8; word-wrap:break-word; }
+  #state.warn { color:#ffd25a; }
+  #state.bad  { color:#ff8a80; }
+  #state.ok   { color:#7fd0a0; }
+  #det { font-size:15px; color:#a898b8; margin:0 0 6px; }
+  #det b { color:#e8c848; font-weight:600; }
+  #cache { font-size:13px; color:#7d6d8e; margin:0; min-height:18px; }
+  #cache.cacheok { color:#7fd0a0; }
+
+  .credit { margin:30px 0 0; font-size:13px; color:#7d6d8e; }
+  .credit span { color:#a898b8; }
+
+  /* TV / desktop: the PS4 browser runs at 1920x1080, so scale everything up */
+  @media (min-width:900px) {
+    html, body { font-size:22px; }
+    body { padding-top:6vh; }
+    .emblem { width:340px; }
+    .sub { font-size:22px; margin-top:18px; }
+    .fw span { font-size:20px; padding:3px 18px; margin:4px 6px; }
+    #wrap { max-width:900px; padding:34px 32px 28px; }
+    #state { font-size:36px; margin-bottom:12px; }
+    #det { font-size:22px; }
+    #cache { font-size:18px; min-height:26px; }
+    .credit { font-size:18px; margin-top:44px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="emblem"><img src="../img.jpg" alt="ZAZA بتاع ألعاب" width="640" height="640"></div>
+
+<p class="sub" lang="ar" dir="rtl">استضافة PS4 &mdash; الإصدارات المدعومة</p>
+<!-- keep this list in sync with SUPPORTED in the script below -->
+<p class="fw" dir="ltr"><span>13.02</span><span>13.04</span><span>13.50</span><span>13.52</span></p>
+
+<div id="wrap">
+  <div id="state">detecting firmware...</div>
+  <div id="det"></div>
+  <div id="cache"></div>
+</div>
+
+<p class="credit" lang="ar" dir="rtl">شكر خاص إلى<br><span dir="ltr">@_AlAzif ChendoChap @Kameleonre_ SiSTR0 Abc</span></p>
+
+<script>
+(function () {
+    var stateEl = document.getElementById("state");
+    var detEl = document.getElementById("det");
+    var cacheEl = document.getElementById("cache");
+    function setState(t, c) { stateEl.textContent = t; stateEl.className = c || ""; }
+    function setCache(t, ok) { cacheEl.textContent = t; cacheEl.className = ok ? "cacheok" : ""; }
+    var params = new URLSearchParams(location.search);
+
+
+    var SUPPORTED = { 1302: 1, 1304: 1, 1350: 1, 1352: 1 }; // all measured on hardware
+
+    var key = null, fwnum = null;
+    var m = /PlayStation\s+4[\/ ](\d+)\.(\d+)/.exec(navigator.userAgent);
+    if (m) {
+        var ms = parseInt(m[2], 16).toString(16);
+        if (ms.length < 2) ms = "0" + ms;
+        key = m[1] + "." + ms;
+        fwnum = parseInt(m[1], 10) * 100 + parseInt(ms, 10);
+    }
+
+    var forced = params.get("force") === "1";
+    var supported = forced || (fwnum !== null && SUPPORTED[fwnum] === 1);
+    detEl.innerHTML = "firmware <b>" + (key || "unknown") + "</b>"
+        + (supported ? " &middot; <b>supported</b>"
+                     : " &middot; not in this build's kernel table");
+
+    var target = "jb.html" + location.search;
+    function go() { setState("loading jailbreak...", "warn"); location.replace(target); }
+
+    function waitForTap(msg, action) {
+        setState(msg, "warn");
+        function fire() {
+            window.removeEventListener("click", fire);
+            window.removeEventListener("keydown", fire);
+            action();
+        }
+        window.addEventListener("click", fire);
+        window.addEventListener("keydown", fire);
+    }
+
+ 
+    if (!supported) {
+        setState("UNSUPPORTED FIRMWARE", "bad");
+        waitForTap("UNSUPPORTED (" + (key || "unknown") + ") -- press X or tap to run anyway", go);
+        return;
+    }
+
+    var ac = window.applicationCache;
+    if (!ac || !document.documentElement.hasAttribute("manifest")) {
+        go();
+    } else if (!navigator.onLine) {
+        setCache("offline -- from cache", true);
+        go();
+    } else if (ac.status === ac.IDLE) {
+        setCache("cached", true);
+        go();
+    } else if (ac.status === ac.UPDATEREADY) {
+        try { ac.swapCache(); } catch (e) {}
+        setCache("update downloaded", true);
+        waitForTap("UPDATE READY -- press X or tap to reload & run",
+                   function () { location.reload(); });
+    } else {
+        setCache("checking cache...");
+        ac.addEventListener("downloading",
+            function () { setCache("caching for offline (first run)..."); }, false);
+        ac.addEventListener("progress", function (e) {
+            if (e && e.total)
+                setCache("caching " + Math.round((e.loaded / e.total) * 100) + "%");
+        }, false);
+        ac.addEventListener("cached", function () {
+            setCache("cached for offline use", true);
+            waitForTap("CACHED (first run) -- press X or tap to run", go);
+        }, false);
+        ac.addEventListener("updateready", function () {
+            try { ac.swapCache(); } catch (e) {}
+            setCache("update downloaded", true);
+            waitForTap("UPDATE READY -- press X or tap to reload & run",
+                       function () { location.reload(); });
+        }, false);
+        ac.addEventListener("noupdate", function () {
+            setCache("cached -- offline ready", true);
+            go();
+        }, false);
+        ac.addEventListener("error", function () {
+            setCache("cache unavailable");
+            waitForTap("CACHE FAILED -- press X or tap to run anyway", go);
+        }, false);
+        ac.addEventListener("obsolete", function () {
+            setCache("cache obsolete");
+            waitForTap("CACHE OBSOLETE -- press X or tap to run", go);
+        }, false);
+    }
+})();
+</script>
+</body>
+</html>
