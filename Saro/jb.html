@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en" manifest="cache.appcache">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Zaza</title>
+    <link rel="icon" type="image/jpeg" href="../img.jpg" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100%;
+        background: #08090d;
+        color: #eef1f7;
+        font-family: "Segoe UI", Tahoma, "Noto Sans Arabic", Arial, sans-serif;
+        font-size: 16px;
+        line-height: 1.5;
+        text-align: center;
+      }
+      body {
+        padding: 12vh 18px 40px;
+        background-image: radial-gradient(
+          circle at 50% 0%,
+          rgba(59, 107, 255, 0.14),
+          rgba(59, 107, 255, 0) 60%
+        );
+      }
+
+      #brand {
+        width: 220px;
+        max-width: 65%;
+        margin: 0 auto;
+        padding: 14px;
+        box-sizing: border-box;
+        background: #0d0f16;
+        border: 1px solid rgba(59, 107, 255, 0.35);
+        border-radius: 22px;
+        box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+      }
+      #brand img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+      }
+
+      /* running: a spinner under the logo. jb.js sets body.done / body.fail / body.log. */
+      #spin {
+        box-sizing: border-box;
+        width: 46px;
+        height: 46px;
+        margin: 28px auto 0;
+        border: 4px solid #1c2030;
+        border-top-color: #3b6bff;
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #msg {
+        display: none;
+        max-width: 520px;
+        margin: 28px auto 0;
+        padding: 14px 20px;
+        background: #12141c;
+        border: 1px solid rgba(255, 84, 112, 0.45);
+        border-radius: 12px;
+        color: #ff5470;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+      }
+
+      /* success panel -- shown once jb.js flips body to "done", instead of
+         the page just quietly hiding the spinner and going blank */
+      #ok {
+        display: none;
+        max-width: 520px;
+        margin: 28px auto 0;
+        padding: 18px 22px;
+        background: #12141c;
+        border: 1px solid rgba(53, 212, 136, 0.45);
+        border-radius: 14px;
+      }
+      #ok .big {
+        color: #35d488;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0.3px;
+      }
+      #ok .small {
+        margin-top: 6px;
+        color: #8890a0;
+        font-size: 14px;
+      }
+
+      #wrap {
+        padding: 0;
+      }
+      #state,
+      #out {
+        display: none;
+      }
+
+      /* run success/fail counter */
+      #stats {
+        display: none;
+        margin-top: 22px;
+      }
+      .stat {
+        display: inline-block;
+        direction: ltr;
+        font-size: 13px;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 6px 14px;
+        margin: 3px 5px;
+        border: 1px solid transparent;
+      }
+      .stat b {
+        font-size: 14px;
+        margin: 0 3px;
+      }
+      .stat-ok {
+        color: #35d488;
+        background: rgba(53, 212, 136, 0.1);
+        border-color: rgba(53, 212, 136, 0.35);
+      }
+      .stat-bad {
+        color: #ff5470;
+        background: rgba(255, 84, 112, 0.1);
+        border-color: rgba(255, 84, 112, 0.35);
+      }
+
+      .phone {
+        margin: 22px 0 0;
+      }
+      .phone a {
+        display: inline-block;
+        direction: ltr;
+        margin: 3px 5px;
+        padding: 6px 18px;
+        border: 1px solid rgba(59, 107, 255, 0.45);
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #7c9bff;
+      }
+
+      body.done #spin {
+        display: none;
+      }
+      body.done #ok {
+        display: block;
+      }
+      body.fail #spin {
+        display: none;
+      }
+      body.fail #msg {
+        display: block;
+      }
+      body.done #stats,
+      body.fail #stats {
+        display: block;
+      }
+
+      /* ?log=1 -- the full step log, with a compact logo on top. */
+      body.log {
+        padding: 0 12px;
+      }
+      body.log #brand {
+        width: 52px;
+        padding: 8px;
+        margin: 10px auto 0;
+      }
+      body.log #spin,
+      body.log #msg,
+      body.log #ok,
+      body.log #stats,
+      body.log .phone {
+        display: none;
+      }
+      body.log #wrap {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 8px 6px 14px;
+      }
+      body.log #state {
+        display: block;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0 0 8px;
+      }
+      body.log #out {
+        display: block;
+        box-sizing: border-box;
+        white-space: pre-wrap;
+        text-align: left;
+        direction: ltr;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 13px;
+        line-height: 1.45;
+        color: #c7ccd8;
+        background: #0d0f16;
+        border: 1px solid rgba(59, 107, 255, 0.28);
+        border-radius: 8px;
+        padding: 10px 12px;
+        height: calc(100vh - 160px);
+        min-height: 160px;
+        overflow-y: auto;
+      }
+      .ok {
+        color: #35d488;
+      }
+      .bad {
+        color: #ff5470;
+      }
+      .warn {
+        color: #ffd25a;
+      }
+      .safe {
+        color: #35d488;
+      }
+      .danger {
+        color: #ff5470;
+      }
+      code {
+        color: #7c9bff;
+      }
+
+      /* TV / desktop: the PS4 browser runs at 1920x1080, so scale up */
+      @media (min-width: 900px) {
+        #brand {
+          width: 300px;
+        }
+        #spin {
+          width: 64px;
+          height: 64px;
+          margin-top: 40px;
+          border-width: 5px;
+        }
+        #msg,
+        #ok {
+          max-width: 680px;
+          margin-top: 40px;
+          padding: 24px 32px;
+        }
+        #msg {
+          font-size: 30px;
+        }
+        #ok .big {
+          font-size: 34px;
+        }
+        #ok .small {
+          font-size: 18px;
+        }
+        .stat {
+          font-size: 18px;
+          padding: 8px 22px;
+        }
+        .stat b {
+          font-size: 19px;
+        }
+        .phone a {
+          font-size: 19px;
+          padding: 8px 24px;
+        }
+        body.log #brand {
+          width: 68px;
+        }
+        body.log #state {
+          font-size: 30px;
+          margin-bottom: 10px;
+        }
+        body.log #out {
+          font-size: 16px;
+          height: calc(100vh - 190px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="brand">
+      <img src="../img.jpg" alt="ZAZA بتاع ألعاب" width="640" height="640" />
+    </div>
+    <div id="spin"></div>
+    <div id="msg">Restart your console</div>
+
+    <div id="ok">
+      <div class="big">✔ تم تفعيل GoldHEN بنجاح</div>
+      <div class="small">يمكنك الآن إغلاق المتصفح وتشغيل الألعاب</div>
+    </div>
+
+    <div id="wrap">
+      <div id="state"></div>
+      <div id="out"></div>
+    </div>
+
+    <div id="stats" aria-live="polite">
+      <span class="stat stat-ok">✔ <b id="okCount">0</b></span>
+      <span class="stat stat-bad">✕ <b id="failCount">0</b></span>
+    </div>
+
+    <p class="phone" dir="ltr">
+      <a href="tel:01007407067">01007407067</a>
+      <a href="tel:01024686143">01024686143</a>
+    </p>
+
+    <script>
+      /* run success/fail counter -- jb.js sets body class to "done" or
+         "fail" once the exploit finishes; we just watch for that instead
+         of touching jb.js. Stored per device (localStorage). */
+      (function () {
+        var STAT_OK = "zaza_run_ok", STAT_FAIL = "zaza_run_fail";
+        var okCount = parseInt(localStorage.getItem(STAT_OK) || "0", 10);
+        var failCount = parseInt(localStorage.getItem(STAT_FAIL) || "0", 10);
+        var counted = false;
+        function paint() {
+          var okEl = document.getElementById("okCount");
+          var failEl = document.getElementById("failCount");
+          if (okEl) okEl.textContent = okCount;
+          if (failEl) failEl.textContent = failCount;
+        }
+        function bump(kind) {
+          if (counted) return;
+          counted = true;
+          if (kind === "ok") {
+            okCount++; localStorage.setItem(STAT_OK, okCount);
+          } else {
+            failCount++; localStorage.setItem(STAT_FAIL, failCount);
+          }
+          paint();
+        }
+        function check() {
+          var cl = document.body.className;
+          if (/\bdone\b/.test(cl)) bump("ok");
+          else if (/\bfail\b/.test(cl)) bump("fail");
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+          paint();
+          check();
+          new MutationObserver(check).observe(document.body, {
+            attributes: true,
+            attributeFilter: ["class"],
+          });
+        });
+      })();
+    </script>
+    <script type="module">
+      import "./jb.js?v=19";
+    </script>
+  </body>
+</html>
