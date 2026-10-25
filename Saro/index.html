@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" manifest="cache.appcache">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Seif-Alden</title>
+<link rel="icon" type="image/jpeg" href="../img.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ZAZA theme — same design system as the 7.00–13.00 host pages:
+     night #1a0c26 · panel #261538 · gold #fccc54 · amber #e4b43c ·
+     orange #e48424 · text #f8f1ff · muted #b3a0c9 */
+  html { min-height:100%; background-color:#1a0c26;
+         background-image:
+           -webkit-radial-gradient(50% 22%, ellipse, rgba(252,204,84,0.14) 0%, rgba(228,180,60,0) 46%),
+           -webkit-radial-gradient(50% 108%, ellipse, rgba(228,132,36,0.16) 0%, rgba(224,58,168,0) 55%),
+           url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240' fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M38 62 L52 38 L66 62 Z' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Ccircle cx='178' cy='50' r='15' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Cpath d='M44 178 L68 202 M68 178 L44 202' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Crect x='164' y='168' width='28' height='28' rx='3' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3C/svg%3E");
+         background-image:
+           radial-gradient(ellipse at 50% 22%, rgba(252,204,84,0.14) 0%, rgba(228,180,60,0) 46%),
+           radial-gradient(ellipse at 50% 108%, rgba(228,132,36,0.16) 0%, rgba(224,58,168,0) 55%),
+           url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240' fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M38 62 L52 38 L66 62 Z' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Ccircle cx='178' cy='50' r='15' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Cpath d='M44 178 L68 202 M68 178 L44 202' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Crect x='164' y='168' width='28' height='28' rx='3' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3C/svg%3E");
+         background-attachment:fixed; }
+  html, body { margin:0; padding:0; color:#f8f1ff; font-family:'Cairo','Segoe UI',Tahoma,'Noto Sans Arabic',Arial,sans-serif;
+               font-size:16px; line-height:1.5; text-align:center; }
+  body { padding:5vh 18px 40px; }
+
+  .emblem { width:240px; max-width:70%; margin:0 auto; border:3px solid #e4b43c;
+            border-radius:36px; background:#1a0c26; overflow:hidden; box-shadow:0 0 0 8px rgba(228,180,60,0.10),0 18px 50px rgba(0,0,0,.7),0 0 70px rgba(228,132,36,0.30); }
+  .emblem img { display:block; width:100%; height:auto; }
+
+  .sub { margin:20px 0 10px; font-size:16px; font-weight:600; color:#b3a0c9; }
+  .fw { margin:0 0 24px; }
+  .fw span { display:inline-block; margin:3px 4px; padding:3px 16px;
+             border:2px solid rgba(228,180,60,.50); border-radius:999px;
+             background:rgba(228,180,60,.08);
+             font-size:15px; font-weight:700; color:#fccc54; }
+
+  /* status panel: #state / #det / #cache are written to by the script */
+  #wrap { max-width:760px; margin:0 auto; padding:22px 22px 18px;
+          background:#261538; border:2px solid rgba(228,180,60,.45);
+          border-radius:20px; direction:ltr; }
+  #state { font-size:22px; font-weight:700; line-height:1.3; margin:0 0 8px;
+           color:#f8f1ff; word-wrap:break-word; }
+  #state.warn { color:#ffb24a; }
+  #state.bad  { color:#f09a8e; }
+  #state.ok   { color:#86e0ab; }
+  #det { font-size:15px; color:#b3a0c9; margin:0 0 6px; }
+  #det b { color:#fccc54; font-weight:700; }
+  #cache { font-size:13px; color:#8f7fab; margin:0; min-height:18px; }
+  #cache.cacheok { color:#86e0ab; }
+
+  /* install success/fail counter -- local to this device (localStorage) */
+  .stats { margin:20px 0 0; }
+  .stat { display:inline-block; direction:ltr; font-size:15px; font-weight:700;
+          border-radius:999px; padding:6px 18px; margin:4px 6px; border:2px solid transparent; }
+  .stat b { font-size:18px; font-weight:800; margin:0 4px; }
+  .stat-ok  { color:#86e0ab; background:rgba(134,224,171,.10); border-color:rgba(134,224,171,.50); }
+  .stat-bad { color:#f09a8e; background:rgba(240,154,142,.10);  border-color:rgba(240,154,142,.50); }
+
+  .phone { margin:34px 0 0; }
+  .phone:before { content:""; display:block; height:4px; max-width:360px;
+                  margin:0 auto 26px; border-radius:2px; background:#e4b43c;
+                  background:-webkit-linear-gradient(left, #fccc54 0%, #e48424 100%);
+                  background:linear-gradient(to right, #fccc54 0%, #e48424 100%); }
+  .phone a { display:inline-block; direction:ltr; margin:3px 5px; padding:7px 26px;
+             background:#e4b43c; background:-webkit-linear-gradient(top,#fccc54,#e48424); background:linear-gradient(to bottom,#fccc54,#e48424);
+             border:2px solid #e48424; border-radius:999px;
+             font-size:17px; font-weight:800; color:#1a0c26; text-decoration:none; }
+
+  .credit { margin:22px 0 0; font-size:14px; color:#9d8bb8; }
+  .credit span { color:#b3a0c9; }
+
+  /* TV / desktop: the PS4 browser runs at 1920x1080, so scale everything up */
+  @media (min-width:900px) {
+    html, body { font-size:22px; }
+    body { padding-top:3.5vh; padding-bottom:24px; }
+    .emblem { width:320px; }
+    .sub { font-size:24px; margin-top:20px; margin-bottom:8px; }
+    .fw span { font-size:22px; padding:4px 22px; margin:4px 6px; }
+    .fw { margin-bottom:20px; }
+    #wrap { max-width:940px; padding:28px 34px 22px; }
+    #state { font-size:38px; margin-bottom:12px; }
+    #det { font-size:24px; }
+    #cache { font-size:20px; min-height:28px; }
+    .stat { font-size:22px; padding:8px 26px; }
+    .stat b { font-size:26px; }
+    .phone:before { max-width:440px; margin-bottom:30px; }
+    .phone a { font-size:24px; padding:9px 34px; }
+    .phone { margin-top:26px; }
+    .stats { margin-top:16px; }
+    .credit { font-size:19px; margin-top:22px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="emblem"><img src="../img.jpg" alt="ZAZA" width="640" height="640"></div>
+
+<p class="sub" lang="ar" dir="rtl">استضافة PS4 &mdash; الإصدارات المدعومة</p>
+<!-- keep this list in sync with SUPPORTED in the script below -->
+<p class="fw" dir="ltr"><span>13.02</span><span>13.04</span><span>13.50</span><span>13.52</span></p>
+
+<div id="wrap">
+  <div id="state">detecting firmware...</div>
+  <div id="det"></div>
+  <div id="cache"></div>
+</div>
+
+<div class="stats" aria-live="polite">
+  <span class="stat stat-ok">✔ <b id="okCount">0</b></span>
+  <span class="stat stat-bad">✕ <b id="failCount">0</b></span>
+</div>
+
+<p class="phone" dir="ltr">
+  <a href="tel:01007407067">01007407067</a>
+  <a href="tel:01024686143">01024686143</a>
+</p>
+
+<p class="credit" lang="ar" dir="rtl">شكر خاص إلى<br><span dir="ltr">@_AlAzif ChendoChap @Kameleonre_ SiSTR0 Abc</span></p>
+
+<script>
+(function () {
+    var stateEl = document.getElementById("state");
+    var detEl = document.getElementById("det");
+    var cacheEl = document.getElementById("cache");
+    function setState(t, c) { stateEl.textContent = t; stateEl.className = c || ""; }
+    function setCache(t, ok) { cacheEl.textContent = t; cacheEl.className = ok ? "cacheok" : ""; }
+    var params = new URLSearchParams(location.search);
+
+    /* install success/fail counter -- counts real install attempts only
+       (not every "already cached" page load), stored per device */
+    var STAT_OK = "zaza_cache_ok", STAT_FAIL = "zaza_cache_fail";
+    var okCount = parseInt(localStorage.getItem(STAT_OK) || "0", 10);
+    var failCount = parseInt(localStorage.getItem(STAT_FAIL) || "0", 10);
+    var statCounted = false;
+    function paintStats() {
+        var okEl = document.getElementById("okCount");
+        var failEl = document.getElementById("failCount");
+        if (okEl) okEl.textContent = okCount;
+        if (failEl) failEl.textContent = failCount;
+    }
+    function bumpOk() {
+        if (statCounted) return;
+        statCounted = true;
+        okCount++; localStorage.setItem(STAT_OK, okCount); paintStats();
+    }
+    function bumpFail() {
+        if (statCounted) return;
+        statCounted = true;
+        failCount++; localStorage.setItem(STAT_FAIL, failCount); paintStats();
+    }
+    paintStats();
+
+    var SUPPORTED = { 1302: 1, 1304: 1, 1350: 1, 1352: 1 }; // all measured on hardware
+
+    var key = null, fwnum = null;
+    var m = /PlayStation\s+4[\/ ](\d+)\.(\d+)/.exec(navigator.userAgent);
+    if (m) {
+        var ms = parseInt(m[2], 16).toString(16);
+        if (ms.length < 2) ms = "0" + ms;
+        key = m[1] + "." + ms;
+        fwnum = parseInt(m[1], 10) * 100 + parseInt(ms, 10);
+    }
+
+    var forced = params.get("force") === "1";
+    var supported = forced || (fwnum !== null && SUPPORTED[fwnum] === 1);
+    detEl.innerHTML = "firmware <b>" + (key || "unknown") + "</b>"
+        + (supported ? " &middot; <b>supported</b>"
+                     : " &middot; not in this build's kernel table");
+
+    var target = "jb.html" + location.search;
+    function go() { setState("loading jailbreak...", "warn"); location.replace(target); }
+
+    function waitForTap(msg, action) {
+        setState(msg, "warn");
+        function fire() {
+            window.removeEventListener("click", fire);
+            window.removeEventListener("keydown", fire);
+            action();
+        }
+        window.addEventListener("click", fire);
+        window.addEventListener("keydown", fire);
+    }
+
+ 
+    if (!supported) {
+        setState("UNSUPPORTED FIRMWARE", "bad");
+        waitForTap("UNSUPPORTED (" + (key || "unknown") + ") -- press X or tap to run anyway", go);
+        return;
+    }
+
+    var ac = window.applicationCache;
+    if (!ac || !document.documentElement.hasAttribute("manifest")) {
+        go();
+    } else if (!navigator.onLine) {
+        setCache("offline -- from cache", true);
+        go();
+    } else if (ac.status === ac.IDLE) {
+        setCache("cached", true);
+        go();
+    } else if (ac.status === ac.UPDATEREADY) {
+        try { ac.swapCache(); } catch (e) {}
+        setCache("update downloaded", true);
+        waitForTap("UPDATE READY -- press X or tap to reload & run",
+                   function () { location.reload(); });
+    } else {
+        setCache("checking cache...");
+        ac.addEventListener("downloading",
+            function () { setCache("caching for offline (first run)..."); }, false);
+        ac.addEventListener("progress", function (e) {
+            if (e && e.total)
+                setCache("caching " + Math.round((e.loaded / e.total) * 100) + "%");
+        }, false);
+        ac.addEventListener("cached", function () {
+            setCache("cached for offline use", true);
+            bumpOk();
+            waitForTap("CACHED (first run) -- press X or tap to run", go);
+        }, false);
+        ac.addEventListener("updateready", function () {
+            try { ac.swapCache(); } catch (e) {}
+            setCache("update downloaded", true);
+            bumpOk();
+            waitForTap("UPDATE READY -- press X or tap to reload & run",
+                       function () { location.reload(); });
+        }, false);
+        ac.addEventListener("noupdate", function () {
+            setCache("cached -- offline ready", true);
+            go();
+        }, false);
+        ac.addEventListener("error", function () {
+            setCache("cache unavailable");
+            bumpFail();
+            waitForTap("CACHE FAILED -- press X or tap to run anyway", go);
+        }, false);
+        ac.addEventListener("obsolete", function () {
+            setCache("cache obsolete");
+            waitForTap("CACHE OBSOLETE -- press X or tap to run", go);
+        }, false);
+    }
+})();
+</script>
+</body>
+</html>

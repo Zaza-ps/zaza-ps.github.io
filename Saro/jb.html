@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en" manifest="cache.appcache">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Seif-Alden</title>
+    <link rel="icon" type="image/jpeg" href="../img.jpg" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+  /* ZAZA theme — same design system as the 7.00–13.00 host pages:
+     night #1a0c26 · panel #261538 · gold #fccc54 · amber #e4b43c ·
+     orange #e48424 · text #f8f1ff · muted #b3a0c9 */
+  html { min-height:100%; background-color:#1a0c26;
+         background-image:
+           -webkit-radial-gradient(50% 22%, ellipse, rgba(252,204,84,0.14) 0%, rgba(228,180,60,0) 46%),
+           -webkit-radial-gradient(50% 108%, ellipse, rgba(228,132,36,0.16) 0%, rgba(224,58,168,0) 55%),
+           url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240' fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M38 62 L52 38 L66 62 Z' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Ccircle cx='178' cy='50' r='15' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Cpath d='M44 178 L68 202 M68 178 L44 202' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Crect x='164' y='168' width='28' height='28' rx='3' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3C/svg%3E");
+         background-image:
+           radial-gradient(ellipse at 50% 22%, rgba(252,204,84,0.14) 0%, rgba(228,180,60,0) 46%),
+           radial-gradient(ellipse at 50% 108%, rgba(228,132,36,0.16) 0%, rgba(224,58,168,0) 55%),
+           url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240' fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M38 62 L52 38 L66 62 Z' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Ccircle cx='178' cy='50' r='15' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Cpath d='M44 178 L68 202 M68 178 L44 202' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Crect x='164' y='168' width='28' height='28' rx='3' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3C/svg%3E");
+         background-attachment:fixed; }
+  html, body { margin:0; padding:0; color:#f8f1ff; font-family:'Cairo','Segoe UI',Tahoma,'Noto Sans Arabic',Arial,sans-serif;
+               font-size:16px; line-height:1.5; text-align:center; }
+  body { min-height:100%; padding:12vh 18px 40px; }
+
+  #brand { width:240px; max-width:65%; margin:0 auto; border:3px solid #e4b43c;
+           border-radius:36px; background:#1a0c26; overflow:hidden; box-shadow:0 0 0 8px rgba(228,180,60,0.10),0 18px 50px rgba(0,0,0,.7),0 0 70px rgba(228,132,36,0.30); }
+  #brand img { display:block; width:100%; height:auto; }
+
+  /* running: a spinner under the logo. jb.js sets body.done / body.fail / body.log. */
+  #spin { box-sizing:border-box; width:46px; height:46px; margin:30px auto 0;
+          border:4px solid rgba(228,180,60,.20); border-top-color:#fccc54; border-radius:50%;
+          -webkit-animation:spin .9s linear infinite; animation:spin .9s linear infinite; }
+  @-webkit-keyframes spin { to { -webkit-transform:rotate(360deg); } }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  #msg { display:none; max-width:520px; margin:28px auto 0; padding:14px 20px;
+         background:#261538; border:2px solid rgba(240,154,142,.55); border-radius:18px;
+         color:#f09a8e; font-size:20px; font-weight:700; letter-spacing:.3px; }
+
+  /* success panel -- shown once jb.js flips body to "done" */
+  #ok { display:none; max-width:520px; margin:28px auto 0; padding:18px 22px;
+        background:#261538; border:2px solid rgba(134,224,171,.55); border-radius:18px; direction:rtl; }
+  #ok .big { color:#86e0ab; font-size:24px; font-weight:800; letter-spacing:.3px; }
+  #ok .small { margin-top:6px; color:#b3a0c9; font-size:14px; }
+
+  #wrap { padding:0; }
+  #state, #out { display:none; }
+
+  /* run success/fail counter */
+  #stats { display:none; margin-top:24px; }
+  .stat { display:inline-block; direction:ltr; font-size:15px; font-weight:700;
+          border-radius:999px; padding:6px 18px; margin:4px 6px; border:2px solid transparent; }
+  .stat b { font-size:18px; font-weight:800; margin:0 4px; }
+  .stat-ok  { color:#86e0ab; background:rgba(134,224,171,.10); border-color:rgba(134,224,171,.50); }
+  .stat-bad { color:#f09a8e; background:rgba(240,154,142,.10);  border-color:rgba(240,154,142,.50); }
+
+  .phone { margin:30px 0 0; }
+  .phone:before { content:""; display:block; height:4px; max-width:360px;
+                  margin:0 auto 26px; border-radius:2px; background:#e4b43c;
+                  background:-webkit-linear-gradient(left, #fccc54 0%, #e48424 100%);
+                  background:linear-gradient(to right, #fccc54 0%, #e48424 100%); }
+  .phone a { display:inline-block; direction:ltr; margin:3px 5px; padding:7px 26px;
+             background:#e4b43c; background:-webkit-linear-gradient(top,#fccc54,#e48424); background:linear-gradient(to bottom,#fccc54,#e48424);
+             border:2px solid #e48424; border-radius:999px;
+             font-size:17px; font-weight:800; color:#1a0c26; text-decoration:none; }
+
+  body.done #spin { display:none; }
+  body.done #ok { display:block; }
+  body.fail #spin { display:none; }
+  body.fail #msg { display:block; }
+  body.done #stats, body.fail #stats { display:block; }
+
+  /* ?log=1 -- the full step log, with a compact logo on top. */
+  body.log { padding:0 12px; }
+  body.log #brand { width:56px; margin:10px auto 0; border-width:2px; border-radius:14px; box-shadow:none; }
+  body.log #spin, body.log #msg, body.log #ok, body.log #stats, body.log .phone { display:none; }
+  body.log #wrap { max-width:900px; margin:0 auto; padding:8px 6px 14px; }
+  body.log #state { display:block; font-size:22px; font-weight:700; margin:0 0 8px; }
+  body.log #out { display:block; box-sizing:border-box; white-space:pre-wrap;
+                  text-align:left; direction:ltr;
+                  font-family:Consolas,"Courier New",monospace; font-size:13px; line-height:1.45;
+                  color:#c7ccd8; background:#140a1e; border:2px solid rgba(228,180,60,.40);
+                  border-radius:12px; padding:10px 12px;
+                  height:calc(100vh - 160px); min-height:160px; overflow-y:auto; }
+  .ok { color:#86e0ab; }
+  .bad { color:#f09a8e; }
+  .warn { color:#ffb24a; }
+  .safe { color:#86e0ab; }
+  .danger { color:#f09a8e; }
+  code { color:#fccc54; }
+
+  /* TV / desktop: the PS4 browser runs at 1920x1080, so scale up */
+  @media (min-width:900px) {
+    #brand { width:340px; }
+    #spin { width:64px; height:64px; margin-top:44px; border-width:6px; }
+    #msg, #ok { max-width:700px; margin-top:44px; padding:26px 34px; }
+    #msg { font-size:30px; }
+    #ok .big { font-size:34px; }
+    #ok .small { font-size:20px; }
+    .stat { font-size:22px; padding:8px 26px; }
+    .stat b { font-size:26px; }
+    .phone:before { max-width:440px; margin-bottom:30px; }
+    .phone a { font-size:24px; padding:9px 34px; }
+    body.log #brand { width:72px; }
+    body.log #state { font-size:30px; margin-bottom:10px; }
+    body.log #out { font-size:16px; height:calc(100vh - 190px); }
+  }
+    </style>
+  </head>
+  <body>
+    <div id="brand">
+      <img src="../img.jpg" alt="ZAZA بتاع ألعاب" width="640" height="640" />
+    </div>
+    <div id="spin"></div>
+    <div id="msg">Restart your console</div>
+
+    <div id="ok">
+      <div class="big">✔ تم تفعيل GoldHEN بنجاح</div>
+      <div class="small">يمكنك الآن إغلاق المتصفح وتشغيل الألعاب</div>
+    </div>
+
+    <div id="wrap">
+      <div id="state"></div>
+      <div id="out"></div>
+    </div>
+
+    <div id="stats" aria-live="polite">
+      <span class="stat stat-ok">✔ <b id="okCount">0</b></span>
+      <span class="stat stat-bad">✕ <b id="failCount">0</b></span>
+    </div>
+
+    <p class="phone" dir="ltr">
+      <a href="tel:01007407067">01007407067</a>
+      <a href="tel:01024686143">01024686143</a>
+    </p>
+
+    <script>
+      /* run success/fail counter -- jb.js sets body class to "done" or
+         "fail" once the exploit finishes; we just watch for that instead
+         of touching jb.js. Stored per device (localStorage). */
+      (function () {
+        var STAT_OK = "zaza_run_ok", STAT_FAIL = "zaza_run_fail";
+        var okCount = parseInt(localStorage.getItem(STAT_OK) || "0", 10);
+        var failCount = parseInt(localStorage.getItem(STAT_FAIL) || "0", 10);
+        var counted = false;
+        function paint() {
+          var okEl = document.getElementById("okCount");
+          var failEl = document.getElementById("failCount");
+          if (okEl) okEl.textContent = okCount;
+          if (failEl) failEl.textContent = failCount;
+        }
+        function bump(kind) {
+          if (counted) return;
+          counted = true;
+          if (kind === "ok") {
+            okCount++; localStorage.setItem(STAT_OK, okCount);
+          } else {
+            failCount++; localStorage.setItem(STAT_FAIL, failCount);
+          }
+          paint();
+        }
+        function check() {
+          var cl = document.body.className;
+          if (/\bdone\b/.test(cl)) bump("ok");
+          else if (/\bfail\b/.test(cl)) bump("fail");
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+          paint();
+          check();
+          new MutationObserver(check).observe(document.body, {
+            attributes: true,
+            attributeFilter: ["class"],
+          });
+        });
+      })();
+    </script>
+    <script type="module">
+      import "./jb.js?v=19";
+    </script>
+  </body>
+</html>
