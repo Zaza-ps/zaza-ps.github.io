@@ -1,0 +1,446 @@
+/* ===================================================================
+   ZAZA Store — PS4 Host
+   Theme built from the ZAZA logo: deep purple field, gold-to-orange
+   letters. Same layout and class names as the alternate theme; only the
+   palette changed. All original ids (#msgs, #menu, #okCount,
+   #failCount) and classes (.btn, .btn-onln, .btn-toolbox, .btn-ps5,
+   .card, .grid, .stat...) are kept, so sub-pages keep working.
+   No CSS variables / no CSS Grid — plain + -webkit- prefixed for the
+   PS4's built-in (old WebKit) browser.
+   Palette: night #1a0c26 · panel #261538 · gold #fccc54 ·
+            amber #e4b43c · orange #e48424 · text #f8f1ff ·
+            muted #b3a0c9
+   =================================================================== */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background-color: #1a0c26;
+  background-image:
+    -webkit-radial-gradient(50% 22%, ellipse, rgba(252,204,84,0.14) 0%, rgba(228,180,60,0) 46%),
+    -webkit-radial-gradient(50% 108%, ellipse, rgba(228,132,36,0.16) 0%, rgba(224,58,168,0) 55%),
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240' fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M38 62 L52 38 L66 62 Z' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Ccircle cx='178' cy='50' r='15' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Cpath d='M44 178 L68 202 M68 178 L44 202' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Crect x='164' y='168' width='28' height='28' rx='3' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3C/svg%3E");
+  background-image:
+    radial-gradient(ellipse at 50% 22%, rgba(252,204,84,0.14) 0%, rgba(228,180,60,0) 46%),
+    radial-gradient(ellipse at 50% 108%, rgba(228,132,36,0.16) 0%, rgba(224,58,168,0) 55%),
+    url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240' fill='none' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M38 62 L52 38 L66 62 Z' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Ccircle cx='178' cy='50' r='15' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Cpath d='M44 178 L68 202 M68 178 L44 202' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3Crect x='164' y='168' width='28' height='28' rx='3' stroke='%23e4b43c' stroke-opacity='0.06'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  color: #f8f1ff;
+  text-align: center;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Arial, sans-serif;
+  padding: 40px 24px 48px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
+
+h1 {
+  text-shadow: none;
+  font-size: 30px;
+  color: #f8f1ff;
+  margin: 0;
+}
+
+/* -------------------------------------------------------------
+   Layout wrapper
+   ------------------------------------------------------------- */
+
+.page {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+/* -------------------------------------------------------------
+   Hero / logo / status message (#msgs is written to by the
+   firmware scripts — id kept exactly)
+   ------------------------------------------------------------- */
+
+.hero {
+  padding-bottom: 28px;
+}
+
+.logo {
+  display: block;
+  width: 340px;
+  max-width: 70%;
+  height: auto;
+  margin: 0 auto 22px;
+  border-radius: 36px;
+  border: 3px solid #e4b43c;
+  background: #1a0c26;
+  box-shadow: 0 0 0 8px rgba(228,180,60,0.10),
+              0 18px 50px rgba(0,0,0,0.7),
+              0 0 70px rgba(228,132,36,0.30);
+}
+
+#msgs {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.7;
+  color: #f8f1ff;
+  background: #261538;
+  border: 2px solid rgba(228,180,60,0.45);
+  border-radius: 20px;
+  padding: 14px 30px;
+  display: inline-block;
+  max-width: 100%;
+  min-height: 28px;
+  unicode-bidi: -webkit-plaintext;
+  unicode-bidi: plaintext;
+  -webkit-transition: color 0.15s ease;
+  transition: color 0.15s ease;
+}
+
+/* -------------------------------------------------------------
+   Loader / cache-install pages (index, cache700, cache900,
+   cachecss, cacheslopkit). The scripts write status text into
+   #msgs directly — only the shell around it is new.
+   ------------------------------------------------------------- */
+
+.loader-page {
+  min-height: 80vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.loader-sub {
+  display: inline-block;
+  font-size: 19px;
+  font-weight: 600;
+  color: #b3a0c9;
+  margin: 0 0 12px;
+}
+
+.loader-status {
+  font-size: 26px;
+  padding: 18px 38px;
+  -webkit-animation: loaderPulse 1.8s ease-in-out infinite;
+  animation: loaderPulse 1.8s ease-in-out infinite;
+}
+
+@-webkit-keyframes loaderPulse {
+  0%, 100% { border-color: rgba(228,180,60,0.40); }
+  50% { border-color: rgba(252,204,84,0.95); }
+}
+@keyframes loaderPulse {
+  0%, 100% { border-color: rgba(228,180,60,0.40); }
+  50% { border-color: rgba(252,204,84,0.95); }
+}
+
+/* -------------------------------------------------------------
+   Activation stats — success / fail tiles. Counts are per-device
+   (stored in localStorage on the PS4's own browser), not a shared
+   site-wide counter. Colors are the logo's green triangle and red
+   circle.
+   ------------------------------------------------------------- */
+
+.loader-stats {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin: 26px 0 0;
+}
+
+.stat {
+  display: block;
+  min-width: 190px;
+  font-size: 18px;
+  font-weight: 700;
+  border-radius: 18px;
+  padding: 14px 26px 10px;
+  margin: 6px 10px;
+  border: 2px solid transparent;
+}
+
+.stat b {
+  display: block;
+  direction: ltr;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 2px 0 0;
+}
+
+.stat-ok {
+  color: #86e0ab;
+  background: rgba(134,224,171,0.10);
+  border-color: rgba(134,224,171,0.50);
+}
+
+.stat-fail {
+  color: #f09a8e;
+  background: rgba(240,154,142,0.10);
+  border-color: rgba(240,154,142,0.50);
+}
+
+/* -------------------------------------------------------------
+   Main menu page (<body class="home">): 11 firmware cards, so the
+   hero is more compact than on the single-purpose loader pages.
+   .logo-strip is the small four-color bar under the logo.
+   ------------------------------------------------------------- */
+
+.logo-strip {
+  width: 140px;
+  height: 4px;
+  margin: 0 auto 20px;
+  border-radius: 999px;
+  background: #e4b43c;
+  background: -webkit-linear-gradient(left, #fccc54 0%, #e48424 100%);
+  background: linear-gradient(to right, #fccc54 0%, #e48424 100%);
+}
+
+.home .hero { padding-bottom: 6px; }
+.home .logo { width: 250px; margin-bottom: 18px; }
+.home #msgs { font-size: 19px; padding: 12px 28px; }
+.home .card { padding: 16px 10px; }
+.home .card .ver { font-size: 22px; }
+.home .card .tag { font-size: 15px; }
+
+/* -------------------------------------------------------------
+   Firmware grid
+   ------------------------------------------------------------- */
+
+#menu {
+  display: block;
+}
+
+.grid {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin: 26px 0 10px;
+}
+
+.card {
+  position: relative;
+  display: block;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 180px;
+  flex: 1 1 180px;
+  max-width: 250px;
+  margin: 8px;
+  padding: 20px 14px;
+  background: #261538;
+  border: 2px solid rgba(228,180,60,0.40);
+  border-radius: 18px;
+  cursor: pointer;
+  -webkit-transition: -webkit-transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.card .ver {
+  display: block;
+  font-size: 24px;
+  font-weight: 800;
+  color: #f8f1ff;
+}
+
+.card .tag {
+  display: block;
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #b3a0c9;
+}
+
+.card:hover,
+.card:focus {
+  border-color: #fccc54;
+  background: #301b47;
+  -webkit-transform: translateY(-3px);
+  transform: translateY(-3px);
+}
+
+.card:hover .ver,
+.card:focus .ver { color: #fccc54; }
+
+.card:active {
+  -webkit-transform: scale(0.96);
+  transform: scale(0.96);
+  border-color: #e4b43c;
+  background: #38224f;
+}
+
+/* -------------------------------------------------------------
+   Action buttons — .btn / .btn-onln kept as the original class
+   names (in case sub-pages reuse them), restyled here.
+   ------------------------------------------------------------- */
+
+.actions {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.btn {
+  background: transparent;
+  color: #f8f1ff;
+  border: 2px solid rgba(255,255,255,0.24);
+  font-size: 19px;
+  font-weight: 700;
+  padding: 14px 34px;
+  margin: 6px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  -webkit-transition: -webkit-transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+  transition: transform 0.1s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.btn:hover,
+.btn:focus {
+  border-color: #fccc54;
+  background: rgba(252,204,84,0.12);
+}
+
+.btn:active {
+  -webkit-transform: scale(0.95);
+  transform: scale(0.95);
+}
+
+.btn-onln {
+  background: #e4b43c;
+  background: -webkit-linear-gradient(top, #fccc54, #e48424);
+  background: linear-gradient(to bottom, #fccc54, #e48424);
+  border-color: #e48424;
+  color: #1a0c26;
+}
+
+.btn-onln:hover,
+.btn-onln:focus {
+  background: #fccc54;
+  border-color: #fccc54;
+}
+
+/* -------------------------------------------------------------
+   Footer — four-color strip (the logo's four symbols), contact,
+   credit line
+   ------------------------------------------------------------- */
+
+.site-footer {
+  margin-top: 44px;
+}
+
+.site-footer:before {
+  content: "";
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  margin-bottom: 28px;
+  background: #e4b43c;
+  background: -webkit-linear-gradient(left, #fccc54 0%, #e48424 100%);
+  background: linear-gradient(to right, #fccc54 0%, #e48424 100%);
+}
+
+.contact {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.contact a {
+  display: inline-block;
+  font-size: 22px;
+  font-weight: 800;
+  color: #1a0c26;
+  background: #e4b43c;
+  background: -webkit-linear-gradient(top, #fccc54, #e48424);
+  background: linear-gradient(to bottom, #fccc54, #e48424);
+  border:2px solid #e48424;
+  border-radius: 999px;
+  padding: 8px 30px;
+  margin: 4px 8px;
+  direction: ltr;
+  -webkit-transition: background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.contact a:hover,
+.contact a:focus {
+  background: #fccc54;
+  border-color: #fccc54;
+}
+
+.credit {
+  font-size: 17px;
+  color: #9d8bb8;
+  line-height: 2;
+  margin: 0;
+}
+
+.credit a {
+  color: #fccc54;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(252,204,84,0.4);
+}
+
+.credit a:hover { color: #fff; border-color: #fff; }
+
+/* ===================================================================
+   Legacy / shared classes — kept for compatibility with sub-pages.
+   Not used on this page right now, left in place intentionally.
+   =================================================================== */
+
+#progress { display: block; }
+#tools { display: none; }
+#lnx { display: none; }
+#mods { display: none; }
+
+.btn-toolbox {
+  background-color: #b8421a;
+  color: #fff;
+  border-color: #b8421a;
+}
+.btn-toolbox:hover { background-color: #d8541f; border-color: #d8541f; }
+
+.btn-ps5 {
+  background-color: #3f2a58;
+  color: #fff;
+  border-color: #3f2a58;
+}
+.btn-ps5:hover { background-color: #d8c9ec; border-color: #d8c9ec; color: #1a0c26; }
