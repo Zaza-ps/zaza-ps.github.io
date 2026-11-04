@@ -1,80 +1,52 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=1280">
-<title>PS4 Exploit Host by Seif-Alden</title>
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800&display=swap" rel="stylesheet">
-</head>
-<body class="home">
-<script>
-var histlength=history.length;history.go(-histlength + 2);
-</script>
+<!doctype html>
+<html class="landing" lang="en" manifest="cache.appcache">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PS4 Exploit Host by Seif-Alden</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Every run starts from here. The referrer guard in jb.js arms the chain
+         only when it was reached from this page, so that a browser restoring
+         its last session cannot re-run it unattended. -->
+    <div id="brand"><b>ZAZA</b></div>
+    <div class="brand-strip"></div>
 
-<div class="page">
+    <div class="shell">
+      <img class="meme" src="meme.png" alt="ZAZA" />
 
-<header class="hero">
-  <img class="logo" src="img.jpg" alt="ZAZA">
-  <div class="logo-strip"></div>
-  <h1 id="msgs">اختر إصدار الفيرموير الخاص بجهازك</h1>
-</header>
+      <main class="panel">
+        <p class="lede">PS4 kernel exploit &middot; firmware 13.52 and 14.00</p>
 
-<div id="menu">
+        <form class="pick" id="pick">
+          <label class="opt">
+            <input type="radio" name="payload" value="hen" />
+            <span>ps4-hen</span>
+          </label>
+          <label class="opt">
+            <input type="radio" name="payload" value="goldhen" checked />
+            <span>GoldHEN</span>
+          </label>
 
-  <div class="grid">
-    <a class="card" href="505goldhen/index.html" onmouseover="msgs.innerHTML='استضافة PS4 5.05 — GoldHEN'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">5.05</span><span class="tag">GoldHEN</span>
-    </a>
-    <a class="card" href="505/index.html" onmouseover="msgs.innerHTML='استضافة PS4 5.05 — v2.5'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">5.05</span><span class="tag">v2.5</span>
-    </a>
-    <a class="card" href="672goldhen/index.html" onmouseover="msgs.innerHTML='استضافة PS4 6.72 — GoldHEN'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">6.72</span><span class="tag">GoldHEN</span>
-    </a>
-    <a class="card" href="672/index.html" onmouseover="msgs.innerHTML='استضافة PS4 6.72 — v3.0'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">6.72</span><span class="tag">v3.0</span>
-    </a>
-    <a class="card" href="702/index.html" onmouseover="msgs.innerHTML='استضافة PS4 7.02 — v1.4'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">7.02</span><span class="tag">v1.4</span>
-    </a>
-    <a class="card" href="75x/index.html" onmouseover="msgs.innerHTML='استضافة PS4 7.50 - 7.55 — v1.5'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">7.50-7.55</span><span class="tag">v1.5</span>
-    </a>
-    <a class="card" href="g2all/index.html" onmouseover="msgs.innerHTML='استضافة GoldHEN لإصدارات 7.00 - 13.00'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">7.00-13.00</span><span class="tag">GoldHEN</span>
-    </a>
-    <a class="card" href="Saro/index.html" onmouseover="msgs.innerHTML='استضافة GoldHEN لإصدارات 13.02 - 13.52'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">13.02-13.52</span><span class="tag">GoldHEN</span>
-    </a>
-    <a class="card" href="900goldhen/index.html" onmouseover="msgs.innerHTML='استضافة PS4 9.00 — GoldHEN (FontFaceSet Webkit)'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">9.00</span><span class="tag">GoldHEN</span>
-    </a>
-    <a class="card" href="900v2/index.html" onmouseover="msgs.innerHTML='استضافة PS4 9.00 — v2.8 استغلال يدوي (FontFaceSet Webkit)'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">9.00</span><span class="tag">v2.8 يدوي</span>
-    </a>
-    <a class="card" href="900v3/index.html" onmouseover="msgs.innerHTML='استضافة PS4 9.00 — v3.0 استغلال تلقائي (FontFaceSet Webkit)'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">
-      <span class="ver">9.00</span><span class="tag">v3.0 تلقائي</span>
-    </a>
-  </div>
+          <label class="opt opt-auto">
+            <input type="checkbox" id="auto" checked />
+            <span>autostart</span>
+          </label>
 
-  <div class="actions">
-    <a class="btn" href="restore/index.html" onmouseover="msgs.innerHTML='استعادة الهوست لدليل المستخدم من غير استخدام DNS'" onmouseout="msgs.innerHTML='اختر إصدار الفيرموير الخاص بجهازك'">استعادة الهوست</a>
-  </div>
+          <button class="btn" type="submit">start</button>
+          <p class="count" id="count"></p>
+          <p class="count" id="cache" aria-live="polite"></p>
+        </form>
+      </main>
+    </div>
 
-</div>
+    <div class="phone">
+      <a href="tel:01007407067">01007407067</a>
+      <a href="tel:01024686143">01024686143</a>
+    </div>
 
-<footer class="site-footer">
-  <div class="contact">
-    <a href="tel:01007407067">01007407067</a>
-    <a href="tel:01024686143">01024686143</a>
-  </div>
-  <p class="credit">
-تم انشاء هذه الصفحة بواسطة Saro 
-  </p>
-</footer>
-
-</div>
-
-</body>
+    <p class="byline">by well0nez/m0zz</p>
+    <script src="launch.js"></script>
+  </body>
 </html>
