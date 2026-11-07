@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html manifest="700.manifest" lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>PS4 [5.05] 7.00 - 14.00 FW GoldHEN Host by Seif-Alden</title>
+<link rel="icon" type="image/jpeg" href="../img.jpg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<script>
+history.replaceState(null,null,'index.html');var histlength=history.length;history.go(-histlength);
+function DLProgress(e){Percent=(Math.round(e.loaded / e.total * 100));window.msgs.innerHTML="Installing Offline Cache: " + Percent + "%";}
+function DisplayCacheProgress(){window.msgs.innerHTML="Cache Installed Successfully ✔";setTimeout(function(){window.msgs.innerHTML="Now Close And Re-Open Your Browser ...";},1500);}
+window.applicationCache.addEventListener("progress",DLProgress,false);
+window.applicationCache.oncached=function(e){DisplayCacheProgress();};
+window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
+window.applicationCache.onerror=function(e){window.msgs.innerHTML="Error Installing Cache! - Clear and Re-Open Your Browser ...";};
+</script>
+
+<div class="page loader-page has-steps">
+
+  <header class="hero"><img class="logo" src="../img.jpg" alt=""></header>
+
+  <h2 id="pvTitle" class="pv-title">جاري تجهيز الجهاز…</h2>
+
+  <ol id="steps" class="steps">
+    <li id="step1" class="step is-active"><span class="dot">1</span><b>تحميل الكاش</b><small>جاري التحميل</small></li>
+    <li id="step2" class="step"><span class="dot">2</span><b>تحميل GoldHEN</b><small>في الانتظار</small></li>
+    <li id="step3" class="step"><span class="dot">3</span><b>اكتمال التفعيل</b><small>في الانتظار</small></li>
+  </ol>
+
+  <h1 id="msgs" class="loader-status">Starting Cache Installation...</h1>
+  <div class="dl-progress" aria-hidden="true"><i id="dlbar"></i></div>
+  <p id="pvNote" class="pv-note">ماتقفلش الصفحة لحد ما التحميل يخلص</p>
+
+  <footer class="site-footer">
+    <div class="contact">
+      <a href="tel:01007407067">01007407067</a>
+      <a href="tel:01024686143">01024686143</a>
+    </div>
+    <p class="credit">
+      شكر خاص إلى:<br>
+      <span dir="ltr">
+        <a href="https://twitter.com/_AlAzif" target="_blank" rel="noopener">@_AlAzif</a>
+        ChendoChap
+        <a href="https://x.com/Kameleonre_" target="_blank" rel="noopener">@Kameleonre_</a>
+        SiSTR0 Abc
+      </span>
+    </p>
+  </footer>
+
+</div>
+
+<script>
+/* Visual helper only: it READS #msgs and never writes to it, so the cache scripts above are untouched.
+   Fills the bar with the real percentage, drives the 3 steps and tints the status box. */
+(function () {
+  var msgs = document.getElementById("msgs");
+  if (!msgs) return;
+  var bar = document.getElementById("dlbar"), steps = document.getElementById("steps");
+  var s1 = document.getElementById("step1"), dot = s1.getElementsByTagName("span")[0], small = s1.getElementsByTagName("small")[0];
+  var title = document.getElementById("pvTitle"), note = document.getElementById("pvNote");
+  var CHECK = '<svg viewBox="0 0 24 24" width="30" height="30"><path d="M5.5 12.8l4.4 4.4 8.6-9.6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>', CROSS = '<svg viewBox="0 0 24 24" width="30" height="30"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg>';
+  var state = "";
+  function paint() {
+    var t = msgs.textContent || "", m = t.match(/(\d+)\s*%/);
+    if (/Error|Failed|Not Found|Unsupported/i.test(t)) state = "fail";
+    else if (state !== "fail" && /Installed Successfully|Now Close/i.test(t)) state = "ok";
+    if (state === "ok") {
+      bar.style.width = "100%"; bar.className = "is-ok";
+      s1.className = "step is-done"; dot.innerHTML = CHECK; small.innerHTML = "\u062a\u0645\u0651\u062a";
+      steps.className = "steps p1";
+      title.innerHTML = "\u062a\u0645 \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0643\u0627\u0634";
+      note.innerHTML = "\u0627\u0642\u0641\u0644 \u0627\u0644\u0645\u062a\u0635\u0641\u062d \u0648\u0627\u0641\u062a\u062d\u0647 \u062a\u0627\u0646\u064a \u0639\u0634\u0627\u0646 \u064a\u0643\u0645\u0644";
+    } else if (state === "fail") {
+      bar.className = "is-fail";
+      s1.className = "step is-fail"; dot.innerHTML = CROSS; small.innerHTML = "\u0641\u0634\u0644";
+      title.innerHTML = "\u0641\u0634\u0644 \u0627\u0644\u062a\u062d\u0645\u064a\u0644";
+      note.innerHTML = "\u0627\u0645\u0633\u062d \u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u062a\u0635\u0641\u062d \u0648\u062c\u0631\u0628 \u062a\u0627\u0646\u064a";
+    } else if (m) {
+      bar.style.width = m[1] + "%";
+      small.innerHTML = "\u062c\u0627\u0631\u064a \u0627\u0644\u062a\u062d\u0645\u064a\u0644 " + m[1] + "%";
+    }
+    msgs.className = "loader-status" + (state ? " is-" + state : "");
+  }
+  paint();
+  setInterval(paint, 250);
+})();
+</script>
+
+<div id="fwbadge" class="fw-badge" aria-live="polite"></div>
+<script>
+/* Firmware badge. Reads the user agent only and writes only into #fwbadge.
+   The ranges below are the same ones index.html uses to pick an exploit:
+   5.05 / 5.07, 7.00-8.52, 9.00-9.60, 10.00-11.02, 11.50-12.02,
+   12.50-13.00, 13.02-13.52 and 14.00. */
+(function () {
+  var el = document.getElementById("fwbadge");
+  if (!el) return;
+  var m = navigator.userAgent.match(/PlayStation 4[ \/]([\d.]+)/i);
+  var ver = m ? m[1] : "", v = m ? parseFloat(m[1]) : 0;
+  var ok = m && (v === 5.05 || v === 5.07 ||
+    (v >= 7.00 && v <= 8.52) || (v >= 9.00 && v <= 9.60) ||
+    (v >= 10.00 && v <= 11.02) || (v >= 11.50 && v <= 12.02) ||
+    (v >= 12.50 && v <= 13.00) || (v >= 13.02 && v <= 13.52) || v === 14.00);
+  var icon = ok
+    ? '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="M6.5 12.6l3.8 3.8 7.2-8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="M8 8l8 8M16 8l-8 8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg>';
+  el.className = "fw-badge " + (ok ? "is-ok" : "is-bad");
+  if (!m) {
+    el.innerHTML = icon + '<span class="fw-txt">\u0644\u064a\u0633 \u062c\u0647\u0627\u0632 PS4</span>';
+  } else {
+    el.innerHTML = icon + '<span class="fw-txt fw-ps">PS4</span><span class="fw-ver">' + ver + '</span><span class="fw-sep">\u00b7</span><span>' +
+      (ok ? "\u0645\u062f\u0639\u0648\u0645" : "\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645") + '</span>';
+  }
+})();
+</script>
+</body>
+</html>
