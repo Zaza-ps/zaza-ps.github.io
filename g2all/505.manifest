@@ -1,0 +1,24 @@
+CACHE MANIFEST 
+# ZAZA v5 - 2026-11-06
+
+CACHE: 
+../img.jpg
+../style.css
+../fonts/cairo-arabic-600-normal.woff2
+../fonts/cairo-arabic-600-normal.woff
+../fonts/cairo-latin-600-normal.woff2
+../fonts/cairo-latin-600-normal.woff
+../fonts/cairo-arabic-700-normal.woff2
+../fonts/cairo-arabic-700-normal.woff
+../fonts/cairo-latin-700-normal.woff2
+../fonts/cairo-latin-700-normal.woff
+../fonts/cairo-arabic-800-normal.woff2
+../fonts/cairo-arabic-800-normal.woff
+../fonts/cairo-latin-800-normal.woff2
+../fonts/cairo-latin-800-normal.woff
+goldhen_2.4b18.13.bin
+index.html
+505\exploit.js
+
+NETWORK: 
+* 

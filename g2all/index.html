@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>PS4 [5.05] 7.00 - 14.00 FW GoldHEN Host by Seif-Alden</title>
+<link rel="icon" type="image/jpeg" href="../img.jpg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<script>
+/* GoldHEN activation counter -- every firmware branch's script
+   (700/900's lapse.js, css/main.js, slopkit's chain_lapse.js /
+   chain_poops.js) writes one of three fixed strings into #msgs once
+   it actually finishes: "GoldHEN v2.4b18.xx Loaded ...", "GoldHEN is
+   Already Loaded ...", or "Failed to Load! Restart Your Console ...".
+   We watch for those instead of the earlier cache-download counter,
+   which only proved the files were on the device, not that GoldHEN
+   activated. Stored per device (localStorage). */
+var STAT_OK = "zaza_activate_ok", STAT_FAIL = "zaza_activate_fail";
+var okCount = parseInt(localStorage.getItem(STAT_OK) || "0", 10);
+var failCount = parseInt(localStorage.getItem(STAT_FAIL) || "0", 10);
+var activationCounted = false;
+
+function paintStats() {
+    var okEl = document.getElementById("okCount");
+    var failEl = document.getElementById("failCount");
+    if (okEl) okEl.textContent = okCount;
+    if (failEl) failEl.textContent = failCount;
+}
+
+function bumpActivation(kind) {
+    if (activationCounted) return;
+    activationCounted = true;
+    if (kind === "ok") { okCount++; localStorage.setItem(STAT_OK, okCount); }
+    else { failCount++; localStorage.setItem(STAT_FAIL, failCount); }
+    paintStats();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    paintStats();
+
+    var msgsEl = document.getElementById("msgs");
+    if (msgsEl && window.MutationObserver) {
+        new MutationObserver(function () {
+            var t = msgsEl.textContent || "";
+            if (/GoldHEN v[0-9a-z.]+ Loaded/i.test(t) ||
+                t.indexOf("GoldHEN is Already Loaded") !== -1) {
+                bumpActivation("ok");
+            } else if (t.indexOf("Failed to Load") !== -1 ||
+                       t.indexOf("No offsets for this firmware") !== -1 ||
+                       t.indexOf("Content not Found") !== -1) {
+                bumpActivation("fail");
+            }
+        }).observe(msgsEl, { childList: true, characterData: true, subtree: true });
+    }
+
+    /* 700/alert.js and 900/alert.js report uncaught script errors with a
+       plain alert() popup and never touch #msgs, which used to leave the
+       page frozen on "Loading..." forever if that happened. Catch it here
+       so the counter and the on-page message both reflect the failure,
+       without removing the original alert (still useful for debugging). */
+    var origAlert = window.alert;
+    window.alert = function (message) {
+        bumpActivation("fail");
+        if (msgsEl) {
+            msgsEl.innerHTML = 'فشل تفعيل GoldHEN -- أعد تشغيل الجهاز <span style="color:red;">(انظر الرسالة)</span>';
+        }
+        return origAlert.call(window, message);
+    };
+});
+
+var uaFull = navigator.userAgent;
+var match = uaFull.match(/PlayStation 4[ /]([\d.]+)/i);
+var isPS4 = match !== null;
+var fwVersion = isPS4 ? match[1] : "Unknown";
+var fwNum = parseFloat(fwVersion);
+
+function onScriptError() {
+    msgs.innerHTML = "Content not Found! - Clear Browser Data and Re-Install Cache ...";
+}
+
+if (!isPS4) {
+    document.addEventListener("DOMContentLoaded", () => {
+        msgs.innerHTML = "Only for PS4 with Firmware 5.05 and 7.00 to 14.00";
+    });
+} else {
+    if (window.applicationCache.status == '0') {
+        if (fwNum == 5.05 || fwNum == 5.07) {
+            window.location.replace("cache505.html");
+        } else if (fwNum >= 7.00 && fwNum <= 8.52) {
+            window.location.replace("cache700.html");
+        } else if (fwNum >= 9.00 && fwNum <= 9.60) {
+            window.location.replace("cache900.html");
+        } else if (fwNum >= 10.00 && fwNum <= 11.02) {
+            window.location.replace("cachecss.html");
+        } else if (fwNum >= 11.50 && fwNum <= 14.00) {
+            window.location.replace("cacheslopkit.html");
+        } else {
+            document.addEventListener("DOMContentLoaded", () => {
+                msgs.innerHTML = 'Unsupported Firmware: <span style="color: red;">' + fwVersion + '</span>';
+            });
+        }
+    } else {
+        if (fwNum == 5.05 || fwNum == 5.07) {
+            var script = document.createElement('script');
+            script.src = "505/exploit.js";
+            script.onerror = onScriptError;
+            document.head.appendChild(script);
+        }
+        else if (fwNum >= 7.00 && fwNum <= 8.52) {
+            var script = document.createElement('script');
+            script.type = 'module';
+            script.src = "700/alert.js";
+            script.onerror = onScriptError;
+            document.head.appendChild(script);
+        }
+        else if (fwNum >= 9.00 && fwNum <= 9.60) {
+            var script = document.createElement('script');
+            script.type = 'module';
+            script.src = "900/alert.js";
+            script.onerror = onScriptError;
+            document.head.appendChild(script);
+        }
+        else if (fwNum >= 10.00 && fwNum <= 11.02) {
+            var script = document.createElement('script');
+            script.src = "css/main.js";
+            script.onerror = onScriptError;
+            script.onload = function () {
+                setTimeout(function () {
+                    doJb();
+                }, 500);
+            };
+            document.head.appendChild(script);
+        }
+        else if (fwNum >= 11.50 && fwNum <= 12.02) {
+            var script = document.createElement('script');
+            script.type = 'module';
+            script.src = "slopkit/chain_lapse.js";
+            script.onerror = onScriptError;
+            document.head.appendChild(script);
+        }
+        else if (fwNum >= 12.50 && fwNum <= 13.00) {
+            var script = document.createElement('script');
+            script.type = 'module';
+            script.src = "slopkit/chain_poops.js";
+            script.onerror = onScriptError;
+            document.head.appendChild(script);
+        }
+        else if (fwNum >= 13.02 && fwNum <= 13.52) {
+            var script = document.createElement('script');
+            script.type = 'module';
+            script.src = "slopkit/jb.js?v=19";
+            script.onerror = onScriptError;
+            document.head.appendChild(script);
+        }
+		else if (fwNum == 14.00) {
+            var script = document.createElement('script');
+            script.type = 'module';
+            script.src = "slopkit/jb2.js";
+            script.onerror = onScriptError;
+            document.head.appendChild(script);
+        }
+    }
+}
+</script>
+
+<div class="page loader-page">
+
+  <header class="hero">
+    <img class="logo" src="../img.jpg" alt="ZAZA">
+    <p class="loader-sub">استضافة PS4 — GoldHEN لإصدارات 5.05 و7.00 حتى 14.00</p>
+  </header>
+
+  <h1 id="msgs" class="loader-status">Loading GoldHEN v2.4b18.13... Please Wait</h1>
+
+  <div class="loader-stats" aria-live="polite">
+    <span class="stat stat-ok">✔ نجاح التفعيل <b id="okCount">0</b></span>
+    <span class="stat stat-fail">✕ فشل التفعيل <b id="failCount">0</b></span>
+  </div>
+
+  <footer class="site-footer">
+    <div class="contact">
+      <a href="tel:01007407067">01007407067</a>
+      <a href="tel:01024686143">01024686143</a>
+    </div>
+    <p class="credit">
+      شكر خاص إلى:<br>
+      <span dir="ltr">
+        <a href="https://twitter.com/_AlAzif" target="_blank" rel="noopener">@_AlAzif</a>
+        ChendoChap
+        <a href="https://x.com/Kameleonre_" target="_blank" rel="noopener">@Kameleonre_</a>
+        SiSTR0 Abc
+      </span>
+    </p>
+  </footer>
+
+</div>
+
+<script>
+/* Visual helper only: reads #msgs, never writes to it. Green box once
+   GoldHEN reports Loaded / Already Loaded, red on any failure message. */
+(function () {
+  var msgs = document.getElementById("msgs");
+  var state = "";
+  if (!msgs) return;
+  function paint() {
+    var t = msgs.textContent || "";
+    if (/Failed|Error|Not Found|Unsupported|No offsets|Only for PS4|\u0641\u0634\u0644/i.test(t)) {
+      state = "fail";
+    } else if (state !== "fail" && /Loaded/.test(t)) {
+      state = "ok";
+    }
+    msgs.className = "loader-status" + (state ? " is-" + state : "");
+  }
+  paint();
+  setInterval(paint, 250);
+})();
+</script>
+
+<div id="fwbadge" class="fw-badge" aria-live="polite"></div>
+<script>
+/* Firmware badge. Reads the user agent only and writes only into #fwbadge.
+   The ranges below are the same ones index.html uses to pick an exploit:
+   5.05 / 5.07, 7.00-8.52, 9.00-9.60, 10.00-11.02, 11.50-12.02,
+   12.50-13.00, 13.02-13.52 and 14.00. */
+(function () {
+  var el = document.getElementById("fwbadge");
+  if (!el) return;
+  var m = navigator.userAgent.match(/PlayStation 4[ \/]([\d.]+)/i);
+  var ver = m ? m[1] : "", v = m ? parseFloat(m[1]) : 0;
+  var ok = m && (v === 5.05 || v === 5.07 ||
+    (v >= 7.00 && v <= 8.52) || (v >= 9.00 && v <= 9.60) ||
+    (v >= 10.00 && v <= 11.02) || (v >= 11.50 && v <= 12.02) ||
+    (v >= 12.50 && v <= 13.00) || (v >= 13.02 && v <= 13.52) || v === 14.00);
+  var icon = ok
+    ? '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="M6.5 12.6l3.8 3.8 7.2-8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="M8 8l8 8M16 8l-8 8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg>';
+  el.className = "fw-badge " + (ok ? "is-ok" : "is-bad");
+  if (!m) {
+    el.innerHTML = icon + '<span class="fw-txt">\u0644\u064a\u0633 \u062c\u0647\u0627\u0632 PS4</span>';
+  } else {
+    el.innerHTML = icon + '<span class="fw-txt fw-ps">PS4</span><span class="fw-ver">' + ver + '</span><span class="fw-sep">\u00b7</span><span>' +
+      (ok ? "\u0645\u062f\u0639\u0648\u0645" : "\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645") + '</span>';
+  }
+})();
+</script>
+
+</body>
+</html>

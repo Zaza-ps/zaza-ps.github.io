@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html manifest="css.manifest" lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>PS4 [5.05] 7.00 - 14.00 FW GoldHEN Host by Seif-Alden</title>
+<link rel="icon" type="image/jpeg" href="../img.jpg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<script>
+history.replaceState(null,null,'index.html');var histlength=history.length;history.go(-histlength);
+function DLProgress(e){Percent=(Math.round(e.loaded / e.total * 100));window.msgs.innerHTML="Installing Offline Cache: " + Percent + "%";}
+function DisplayCacheProgress(){window.msgs.innerHTML="Cache Installed Successfully ✔";setTimeout(function(){window.msgs.innerHTML="Now Close And Re-Open Your Browser ...";},1500);}
+window.applicationCache.addEventListener("progress",DLProgress,false);
+window.applicationCache.oncached=function(e){DisplayCacheProgress();};
+window.applicationCache.onupdateready=function(e){DisplayCacheProgress();};
+window.applicationCache.onerror=function(e){window.msgs.innerHTML="Error Installing Cache! - Clear and Re-Open Your Browser ...";};
+</script>
+
+<div class="page loader-page">
+
+  <header class="hero">
+    <img class="logo" src="../img.jpg" alt="ZAZA">
+    <p class="loader-sub">استضافة PS4 — GoldHEN لإصدارات 5.05 و7.00 حتى 14.00</p>
+  </header>
+
+  <h1 id="msgs" class="loader-status">Starting Cache Installation...</h1>
+
+  <div class="dl-progress" aria-hidden="true"><i id="dlbar"></i></div>
+
+  <footer class="site-footer">
+    <div class="contact">
+      <a href="tel:01007407067">01007407067</a>
+      <a href="tel:01024686143">01024686143</a>
+    </div>
+    <p class="credit">
+      شكر خاص إلى:<br>
+      <span dir="ltr">
+        <a href="https://twitter.com/_AlAzif" target="_blank" rel="noopener">@_AlAzif</a>
+        ChendoChap
+        <a href="https://x.com/Kameleonre_" target="_blank" rel="noopener">@Kameleonre_</a>
+        SiSTR0 Abc
+      </span>
+    </p>
+  </footer>
+
+</div>
+
+<script>
+/* Visual helper only: it READS #msgs and never writes to it, so the
+   cache scripts above are untouched. Fills the bar with the real
+   percentage and turns the status box green (done) or red (error). */
+(function () {
+  var msgs = document.getElementById("msgs");
+  var bar = document.getElementById("dlbar");
+  var state = "";
+  if (!msgs) return;
+  function paint() {
+    var t = msgs.textContent || "";
+    var m = t.match(/(\d+)\s*%/);
+    if (/Error|Failed|Not Found|Unsupported/i.test(t)) {
+      state = "fail";
+    } else if (state !== "fail" && /Installed Successfully|Now Close/i.test(t)) {
+      state = "ok";
+    }
+    if (bar) {
+      if (state === "ok") bar.style.width = "100%";
+      else if (state === "" && m) bar.style.width = m[1] + "%";
+      bar.className = state ? "is-" + state : "";
+    }
+    msgs.className = "loader-status" + (state ? " is-" + state : "");
+  }
+  paint();
+  setInterval(paint, 250);
+})();
+</script>
+
+<div id="fwbadge" class="fw-badge" aria-live="polite"></div>
+<script>
+/* Firmware badge. Reads the user agent only and writes only into #fwbadge.
+   The ranges below are the same ones index.html uses to pick an exploit:
+   5.05 / 5.07, 7.00-8.52, 9.00-9.60, 10.00-11.02, 11.50-12.02,
+   12.50-13.00, 13.02-13.52 and 14.00. */
+(function () {
+  var el = document.getElementById("fwbadge");
+  if (!el) return;
+  var m = navigator.userAgent.match(/PlayStation 4[ \/]([\d.]+)/i);
+  var ver = m ? m[1] : "", v = m ? parseFloat(m[1]) : 0;
+  var ok = m && (v === 5.05 || v === 5.07 ||
+    (v >= 7.00 && v <= 8.52) || (v >= 9.00 && v <= 9.60) ||
+    (v >= 10.00 && v <= 11.02) || (v >= 11.50 && v <= 12.02) ||
+    (v >= 12.50 && v <= 13.00) || (v >= 13.02 && v <= 13.52) || v === 14.00);
+  var icon = ok
+    ? '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="M6.5 12.6l3.8 3.8 7.2-8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    : '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="M8 8l8 8M16 8l-8 8" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg>';
+  el.className = "fw-badge " + (ok ? "is-ok" : "is-bad");
+  if (!m) {
+    el.innerHTML = icon + '<span class="fw-txt">\u0644\u064a\u0633 \u062c\u0647\u0627\u0632 PS4</span>';
+  } else {
+    el.innerHTML = icon + '<span class="fw-txt fw-ps">PS4</span><span class="fw-ver">' + ver + '</span><span class="fw-sep">\u00b7</span><span>' +
+      (ok ? "\u0645\u062f\u0639\u0648\u0645" : "\u063a\u064a\u0631 \u0645\u062f\u0639\u0648\u0645") + '</span>';
+  }
+})();
+</script>
+
+</body>
+</html>
